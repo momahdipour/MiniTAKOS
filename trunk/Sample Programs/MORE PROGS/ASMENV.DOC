@@ -1,0 +1,470 @@
+ASMEnv.DOC:
+Pronounce ASM as TASM with T dropped. And, then, ASM En, letting the v go.
+The full name is ASMEnvironment.
+
+ASMEnv.EXE is copyright (C) 1993 by Gene Fowler, and all rights are reserved.
+However, you may use this version (1.9) without paying a licensing fee and you
+may hand it to somebody else so long as you don't ask that person for more than
+a reasonably few dollars to cover the disk, mailer, and pack room on the U.S.
+Mule (or telephone lines). And providing you send along this document, which
+is all the manual and documentation there is at this point. If you wish to
+make a donation of $20 to the "workbench" fund, though, I'll consider that to
+be "registration" and send you any fix of 1.9 and a distribution copy of 2.0. 
+Someday, I'll add a hardcopy "user's guide" to 2.x. Or that's the dream...
+
+There's no warranty of any sort, stated or implied, as ASMEnv is evolving and
+experimental. I can't see how you can do any damage with the program, but I
+accept no responsibility if you manage it. Oh, for those outfits that make
+a living gathering patents and copyrights and searching others' code for
+"matches"...forget it! Ain't an algorithm in here. It's straight forward,
+don't-save-a-byte-or-cycle Turbo Vision. There ain't a look and feel idea in
+it, just using what Borland serves up plus squeezing different colors from
+their tubes onto the palette in App.TPU.
+
+ ********************** A Temporary Nuisance *************************
+
+   ASMEnv is evolved from TVEdit, a demo accompanying Turbo Pascal
+   6.0 and Turbo Vision 1.0. In TVEdit if you are at LineEnd and use
+   the Right Arrow, you go to the next line. This is fine in a word
+   processor (WordPerfect), but drives users up walls in a text editor.
+
+      I've "opened the screen to the right." The Right Arrow will
+   add a space. Tab will add spaces to the target column. A single
+   mouse click adds necessary spaces to pull the cursor.
+
+      To hold down accumulated spaces in the limited buffer, Tab
+   Home, and End keys "clean" lines. Up and Down Arrows add spaces
+   to the line entered and clean the line left. While it's an amateur's
+   hack under the hood, the surface is quite nice, and you'll be happy
+   in your .ASM files. It's all done under lock, so you have no speed
+   penalties or clumsiness of any sort.
+
+      THE NUISANCE: You'll be bringing in .LST files to look over to
+   study your ASM code together with the resultant machine code. TASM
+   uses #9 (tab) codes in the .LST file. Using Left and Right Arrow on
+   a line of text, you find occasional lateral skips. They make sense
+   and won't bother you. It's as if you had the "every eight" tabs and
+   hit Tab. For a time, I had chaos as I used my Up and Down Arrows and
+   serious problems after a PgUp or PgDn...
+
+      ...I solved that, and you can travel up and down with these keys.
+   But sometimes after traveling, a first lateral move might yield an
+   erratic jump. Subsequent keyings are all right. For a time, on first
+   or last lines a Home or End might freeze. I'm not sure it's wholly
+   fixed. If it happens, hit the other key. While working, if a Left
+   Arrow, Right Arrow, Home, or End "froze," one of the other three
+   always broke the jam. Consider it the emergency exit.
+
+ *********************************************************************
+
+A "PROTOTYPE" BORLAND TURBO ASSEMBLER IDE:
+
+ASMEnv.EXE is not a Borland product, and Borland's designers, engineers, and
+programmers bear no responsibility for whatever shortcomings this TASM IDE
+might prove to have. In fact, I don't take a whole lot of responsibility and
+call it a prototype because it's primarily a learning project I've assigned to
+myself and secondarily the bearer of my ideas about a TASM IDE that I'd like
+to hand to those who produce products and the industry's literature (to the
+extent that there is a literature). I bump the version number (usually) when
+I've added some new direction of exploration to this "prototype" and am al-
+ways tinkering and fixing and plugging in new pieces in old directions; so if
+two copies find their way to you with the same version number, take the one
+with the latest file date...it'll be better. There will be "holes" for a long
+time to come, since I'm a one-man team.
+
+The TP6 "Professional" package, which you'll need whether or not you're a
+professional, if you do any serious TP work, includes among its added-in but
+hardly peripheral tools Turbo Assembler. Presumably Borland long ago decided
+that the assembler wouldn't require an IDE like the ones packaged with their
+TP and TC/C++ compilers...because real programmers (who use assembly language)
+would be insulted by such "greasy kid stuff" and would head for industrial
+strength programmers' editors like Brief (which Borland recently bought). Or
+some such reasoning. But we semi-pro's who get these "professional" packages
+are, quite often, inhabitants of the IDEs. Turbo Debugger "emulates" the com-
+piler IDEs, so presumably Borland folks believe that users of the "profes-
+sional" packages will appreciate some tools having that familiar housing.
+
+So, I took as my Turbo Vision project the building of an IDE for TASM, a fair-
+ly large project for a semi-pro or amateur and, really, a novice. But I had
+TVEdit to start from, so I wasn't starting with a blank page. I can push and
+pull, squeeze and expand, redirect... . And I have "see-able" goals. On the
+one hand, I have the TP6 IDE to contrast with TVEdit. On the other, I have an
+image defined by how the IDE ought to be different if I am typing ASM code
+instead of Pascal code, a columnar notation instead of a narrative notation.
+I am in untraveled territory, but not quite without my packet of maps. And
+just about three months later, I'm using ASMEnv pretty heavily and not just
+because it's mine. It's already more useful than anything I know about, let
+alone anything I've got on hand or could get quickly.
+
+STARTING UP AND CLOSING DOWN
+
+Put ASMEnv.EXE, ASMEnv.Hlp, ASMEnv.CFG, and ASMEnv.DSK into your TA (or TASM)
+directory. ASMEnv.CFG and ASMEnv.DSK are "bare bones" files that will hold
+settings between work sessions. If you don't have these, you will not have any
+problem and they will be created for you on exiting the program or, in the case
+of ASMEnv.DSK when you deliberately Save Desktop. Enter ASMEnv by typing ASMEnv
+at the DOS prompt. You could add filenames (wild cards ok) and have them opened
+inside, but skip that this time. If you haven't the .CFG file, you get an error
+box. Press OK and ignore it. Now, you have my ego box. Press okay and it goes
+away. ^F3 brings up your last "desktop" arrangement. Try it and if you have the
+minimal ASMEnv.DSK I created, you get two New File windows. Later, ^F3 will be
+your "main man." For now, your best move is to read the status line at the
+bottom of the screen, and the menu of menus at the top. Alt-F drops the first
+menu. Arrow keys move circularly, either way, around menus. Read what's there.
+And...try Help. F1 gets context-sensitive help. Shift-F1 always gets the "no
+context" help; if you are anywhere except in the menu structure, that is the
+Main Introduction that F1 gets when you're on the blotter with nothing open.
+The right mouse button opens the Help screen like the F1 key (mouse's location
+diesn't matter) and closes it like the ESC key if it is open.
+
+But let's look at the two files ASMEnv looked for, if you didn't have them,
+the .CFG file it wanted to load on startup and the .DSK file it wanted to load 
+when you asked for "Last Desk."
+
+You are going to find that you have "histories" and "editable strings" con-
+nected with input boxes and dialogs. ASMEnv saves these, between work ses-
+sions, in the .CFG file so that you do not have to recreate histories or edit
+paths, params, and batch text each time you work on a project. And you may
+have multiple .CFG files, any one of which can be the ASMEnv.CFG when you
+intend to work on the associated project. When you close down, the ASMEnv.CFG
+in the current directory is updated. And on startup, the one in the current
+directory is loaded and the histories and strings are reinitialized from the
+defaults to your last entries.
+
+When you Exit, ASMEnv.DSK in the current directory is also updated to save your
+"desktop," or all the Editors you have running, with their scroll positions,
+cursor positions, bookmark settings, block selections, and more included. If
+your Clipboard is showing or the calculator running, these won't be saved, but
+their presence won't cause any problems. When you start ASMEnv, the Last Desk
+isn't set up for you as it is when you start Borland IDEs. I wanted a quick
+shifting of the desk or project at any time, including startup time, so I put
+Save and Retrieve DeskTop on a menu and on hot keys and the Retrieve hot key on
+the Status line. That's ^F3. At startup, you hit ^F3, F3, or Shift-F3...and
+you begin working. Shift-F5 gets a Windows List. It lists the first nine opened
+windows and gives the file name in the window. Blanks show closed windows, and
+the lowest numbered blank will be the next window opened. It tells you that
+Alt-# brings the window to the top. You have to OK the dialog before that key-
+ing works.
+
+ASMEnv EDITOR AND IDE
+
+ASMEnv isn't a text editor. It's a whole gang of text editors, for starters,
+and...it's a lot more than that. IDE stands for Integrated Development
+Environment. I guess you can say "environment" generalizes "editor." But a
+"gang of editors" isn't a multiple window editor. The plural means something
+and in fact follows from the "object" technology of TP and TV. Each of the
+editors in the gang (the number being up to you) is a thing unto itself. But
+they're all the same until you give each its "setup" for the file that's in it.
+
+The next section describes an editor in ASMEnv. Here I'll describe what else
+you have in the environment. The desktop, or the desktop "blotter," with the
+menu and status lines instead of those cushy leather borders on a real desk, is
+the background for your editors and internal tools. Unless I'm forgetting
+something, I have only three internal tools so far. There is the "clipboard,"
+which looks like an ordinary editor and in which you can do some editing,
+though you can't load (you can save the contents to) a file. It isn't an
+ordinary editor but a temporary storage used to transfer text between editors.
+When you show it, it opens like an editor, but when you close it, it goes into
+hiding and keeps its contents. The contents are not saved across sessions in
+.CFG or .DSK.
+
+The second tool is a hex calculator/translator that's very useful when writing
+ASM code. I made this from the little Casio among the TV demos. I've given the
+calculator one memory that's in ASMEnv not the calculator, so you can store a
+result, close the calculator, reopen the calculator, and retrieve that re-
+sult. Or you can open two calculators and transfer an item through that one
+memory location. The memory is kept across work sessions in the .CFG file.
+The "I" key gives you information on the calculator. The Calculator is on the
+F11 key and the Utilities menu.
+
+The third tool is an Ascii table which is a powerful book closer on your over-
+crowded workbench.
+
+There is one other internal tool. I've thought of it as an external tool
+because of its look. This is "Last Dos Screen." On startup, you can look at
+the DOS screen that you just left. But This tool is worth its "weight" in gold
+when you use your number one external tool: TASM, the assembler. TASM puts its
+output on the DOS screen, including errors listed with source code line
+numbers. I keep you on the DOS screen after running TASM to study the
+output. But you'll want to "recall" that list while working on your source.
+That's what Last Dos Screen is for. On the Utils menu, you have Find Line #
+forjumping to these error locations.
+
+The external tools are DOS Shell, DOS Command, and "wired-in" programs that
+are, in fact, Exec'd. The programs are TASM, TLINK, Turbo Debugger, Turbo
+Profiler, and TxtPager. All except Dos Shell let you run programs from inside
+ASMEnv, and Dos Shell lets you run programs "on top of" the IDE. In an IDE,
+it's convenient to run a program from a hot key or mouse click, with the
+path and re-used param line all set...and to do this across work sessions. As
+things stand, you won't run the debugger or profiler from inside. They are too
+large and you run programs in them. Here's where ^F3 shows its value. Alt-X
+out, do your debugging or profiling, Enter, hit ^F3, and you're right where you
+were. Later, you'll use the support files TA.BAT (to get TASMS Help inside
+ASMEnv, on the ^F1 key) and TA386.BAT (to run TD386 and TF386 within ASMEnv).
+
+The external tools are self explanatory, except possibly DOS Command and Txt-
+Split. You know about DOS' Exec function (and TP's). DOS Command is a "trans-
+parent" Command Line identical to the one at any DOS prompt. You may use it as
+if it were a DOS prompt, but keep in mind that ASMEnv is setting up child
+processes and know something of your RAM capacity and structure before you do
+any wild launching.
+
+TxtPager is a tool for handling large modules in small capacity editors, as
+each of the gang of editors is. The concept of handling a large file in a small
+editor is new. Every one assumes you don't. You go away and come back with
+smaller files. In any case, you'd be more likely to have large .PAS files than
+large .ASM files...and TP never had a way to work with large files before doing
+away with the 64K editor. Anyway, I wrote TxtPager as a stand-alone, but I in-
+clude it on the disk and wire it into ASMEnv. The help facility tells you how to
+use it. There are advantages to "paging" even smaller files for rapid multiple 
+site working where bookmarks are cumbersome. TxtPager is used both to page and
+recollect your file. Ctrl-F7 gets the param box. Give the name of your file as
+the only paramater. The param will come up every time you hit ^F7, even in your
+next work session because it is save in the .CFG file. Hit OK and choose s to 
+split the file into multiple pages. Pull each page into an editor. Use the
+Alt-# keys to jump among pages and Shift-F5 to see the Windows List. When you
+work on a page, save that page. When you're ready to assemble the whole file
+or do something else to it, hit ^F7, note the same file is the param, hit OK
+and, when you are in TxtPager, select j for join. TxtPager will rebuild the
+complete file from the updated pages. Between sessions your editors with the
+pages in them are saved in the .DSK file.
+
+The "paging" concept has value beyond distributing a large file over several
+editors or providing a more sophisticated bookmark system than the ones on
+the F8 key in each editor. When typing TASM (or MASM) code, you often use the
+PAGE command to go to a new page. You might have a PAGE break after equates
+and macros, another after dseg, and so forth. To use that system of paging
+here, you don't start with filename.asm, but filename.pt1. When you'd use
+PAGE to start a new section, open a new file and save it as filename..pt2.
+And so forth to accumulate yourset of pt? files. Then, call TxtPager, give
+filename.asm as the param and choose j (join). You'll have to keep your
+set of pt? files for the duration because no subsequent splitting of the
+.asm file will give you this unique paging. You can insert a page by re-
+naming a ptN with a later number, let the desk open the original number
+with an empty sheet and load up the higher number. In fact, you can create
+any stack of .pt? files with some desktop work and file naming. Create the
+setup you want.
+
+Some "services" border on being "tools." TVEdit made .BAK files on saves. And
+I cut this out until recently. But now, ^F7 and Alt-F7 turn this on and off.
+Not a toggle, but two definite settings. The default, if you start without a
+.CFG in the current directory, is off. Other services on menus and keys are
+Borland's numbered windows, accessible with Alt-# or F6, the displayable clip-
+board, window zoom, tiling and cascading of windows, and the any-time Save or
+Retrieve of .DSK to and from the current directory. And a gang of search ser-
+vices, of course. Th main one for a TASM (or MASM) user is Find Line #.
+
+ASMEnv--EDITOR
+
+Everything described above is "support" services and "tools." What ASMEnv is
+about, of course, is editing your .ASM source code. Each window opened is a
+full-featured text editor pre-customized for assembly language source code
+production.
+
+Open Screen: The screen must be a sheet of paper rather than a monitor screen
+             in any text editor and particularly in one used for the columnar
+assembly language notation. TVEdit presented a monitor. As in WordPerfect or
+some other word processors, holding down the Right Arrow took you to the line
+end and, then, to the beginning of the next line. The monitor to the right of
+the line ends was "nothingness." Modifying the Editors.PAS code to even rough-
+ly emulate the TP IDE "open screen" was wading in the briar patch and cutting
+strands as though disarming a bomb. But, I've got a fairly smooth open screen
+for you.
+
+Hit the Right Arrow key when you are at the end of a line of text, and a space
+is added and the cursor moved forward. Use the Tab key, and spaces will be
+added, if needed, to put the cursor on the target column. Use the Up or Down
+Arrow key, and spaces are added, if needed, so you can go onto the new line in
+the column you presently occupy. Use PgUp or PgDn and you are in the column
+you expect to be in when you arrive.
+
+You'd think this would fill up your small (61440K) files with spaces in short
+order if you happen to travel a lot. So I've built in "cleaning" of trailing
+spaces. I had to do that, too, so that use of the End key didn't sometimes
+leave you out in the boonies and so that some Shift-cursor combos didn't fail
+to select properly. I put ShrinkLine (my cleaner) on the Home, End, and Enter
+keys for starters (though I had to take it off Enter to keep Autoindent after
+a skipped line). More elegantly, I fixed the Up and Down Arrows so the key
+padded, if necessary, the line it was going to, went, and cleaned the line
+just abandoned. Usually, when landing on a line you aimed at, you'll use
+lateral arrows, Home, End, Tab keys to get to where you type something and
+"freeze" the line (with interior spaces) to that point and beyond.
+
+Tabs:        TP's IDE uses tabs in conjunction with Backspace to implement
+             a system of indent-handlings that is very useful given a nar-
+rative language like Pascal. And TVEdit simply used the "multiples of eight"
+(from left) positioning of the cursor. For assembly language programs and the
+standard four columns for labels, opCodes, operands, and comments, I wanted a
+tab setup different from either TP's IDE of TVEDit.
+
+All the editors (windows) are the same. Four tab positions form a cycle, and
+you forward tab through them: 17-25-42-1-17. Right now, Shift-tab gets you an
+Information box about the tabs. Backward tabbing would take as intricate cod-
+ing as the forward did. And there are only four. Home back-tabs to 1 and
+sometimes End will get you out in the neighborhood you want so a single tab
+will place you where you want to be. I've not yet felt any constraint on my
+movement due to lack of back-tabbing.
+
+TP's Tab is meant to be used on a "clean" line. If used on a line with text
+to the right of the cursor, it pushes that text ahead of it. I can't imagine a
+situation in which you'd use it for this, so it c'n be considered a nuisance.
+Fortunately, you aren't likely to be going to the targets you know Tab seeks
+from such a position. In ASMEnv, you definitely want to "float" over text in
+one column to get to a column on the right to add or correct something. So the
+Tab key definitely DOES NOT push text ahead of it. It floats over text to the
+next target column.
+
+In ASMEnv, you will want to push text with the Tab in one circumstance. In
+another section of this file, I describe my single most important and pride-
+yielding "feature." This is what I call "batch text" and, for identification
+purposes, the AutoTyping of assembly code chunks. The old-fashioned term is
+boilerplate, I think. Anyway, if you use menus in place of hot keys, you can
+damn near type an .ASM module using only your mouse. In any case, ^m will type
+"mov     " and if you keyed it on the opCodes column, you are on the Operands
+column and ready to type "ax, 0" or whatever. If you accidentally typed your
+^m in the labels column, go ahead and type your "ax, 0" and then hit Home and
+Alt-Tab...to push the whole two column entry into place.
+
+AutoTyping:  I have five menus of hot key bound typing potentials for easing
+everybody's number one gripe about assembly language programming: typing those
+small chunks of just-so code in their respective columns. My whole design plan
+for the IDE, or editor(s), grew out of this. I wanted as many of the TASM code
+elements as possible to be typeable as what I call "batch text." So I did the
+first thinking about key use that's apparently been done since the days of
+CP/M. The cannibalized typewriter keyboard is no longer hooked up to our
+machines. We've four banks (shift states) of letter keys and, then, of "other"
+keys, the function and pad keys. It made sense, even if I didn't want all the
+extra text keys I could get, to use letter keys for things having to do with
+"reading" and other keys for things having to with "acting."
+
+I've kept the Alt-Ltr combos for hooking menus. And used letters in the menu
+items, of course, since the user is in the menu and not the editor. And the
+user is reading and typing what's read to get more to read. If you use ^f to
+get your Find Dialog, you aren't doing this at all. You are trying to use the
+letter f as a mnemonic for the action named Find, but that breaks down fast as
+you must use ^l for the Find Next occurrence because ^N is used for New Line,
+and ^a for replAce, because ^r is taken for something else. And with the
+WordStar diamond, ...all pretense is gone. Oh, in the example I've just used,
+I didn't mention the ^Q before some of those keys. It wasn't relevant, and
+I've fixed my TP IDE so you don't need it. ^f and ^a work as well as ^q,f and
+^q,a. And I'm aware that out in the world, in say WinWord in Windows, the user
+sets up hot keys that use ALL THREE shift keys WITH any other key on the 102
+board. So...my design principle is for little, but hot IDEs.
+
+Batch Text:  I call the chunks of text on a key batch text. Some of the con-
+             structs are complex. For instance, Set DS on ^@ or ^2 will type
+two lines and put the cursor on the first line in position to add what is to
+be moved into ax for relay into ds. You'll find this on the Constructs menu.
+Another construct has some features that you might not find on your own. This
+is the IfDef and Else/EndIf on the DefSegs menu. You'll use these for condit-
+ional compilation or assembly. It's usual to tab to OpCodes and hit ^y,x. You
+
+                IfDef    _
+
+get what you see just above. You can type in the symbol and drop down and put
+in the code that will be compiled or assembled IF the symbol is defined earl-
+ier in the file (sorry, not yet optional in the IDE).
+
+                IfDef    Production
+                  ; code here
+
+That's usually as far as it goes. But sometimes, you want an "else" block or
+even an "ElseIf." Now, you'll see some features. You've just typed "code
+here," so now hit Enter. You are under the semi-colon and are tempted to use
+Backspace to get under IfDef (not being in TP's IDE, you must hit it twice).
+Don't bother. Type ^y, z. You will get what is below, because ASMEnv saved
+
+                IfDef    Production
+                  ; code here
+                Else_
+                EndIf
+
+IfDef's column and uses it. You are at the end of Else. You can type "If"
+and Tab to put in a symbol. Or just hit Enter to get a line between Else and
+EndIf for a code block. Suppose you hit ^y,x in the Label column? Easy, type
+your symbol where your cursor is, Home, Alt-Tab to push the text. Now, ^y,z
+will Put the Else/EndIf block in the Label column. And your cursor is after
+Else. Don't type, push, or fix. Hit ^Backspace twice. It takes out the two
+lines. Now, type ^y,z again. It will print in Column 17 this time because it
+adjusted the column tracker variable after the first print. The default IS
+column 17, the OpCodes column.
+
+Editables:   The segment definition strings, from my batch text, and the paths
+             for the programs wired in as tools, are editable. I've given the
+definition lines that are standard in texts for novice programmers, since I am
+a novice programmer and work with these. You can replace them with whatever
+you use, including the "short form" notations such as .CODE or CODESEG. I've
+tied the spacing in with the tab settings for decent appearance, so you might
+want to hit the insert key for typeover before editing.
+
+Edited strings and the accumulated histories are saved from one work session
+to the next in the ASMEnv.CFG file. But if you want to change the defaults so
+you don't have to redo all these if you decide to "work differently" in some
+transcendental sense later, you have to go into a byte editor like Norton's
+DiskEdit. Find the string and you'll see zeros behind it up to a face symbol.
+That's the field (space) available to you. Type in the string you want with
+zeros filling that excess, write the cluster to disk, and you're set. DO NOT
+FORGET that the byte before my lead c is the line length and you must make
+that match your new string length (on the hex dump side).
+
+Printing:    Printing is on the File Menu and the Alt-F2 hot key. If you have
+             a block selected, that, rather than the whole buffer, will be
+printed. The "save to PRN" of 1.8 has been replaced. ASMEnv uses a child pro-
+gram, ASMPRN.EXE, which must be on your path. Key or click Print and you get
+a message reminding you to prepare your printer. OK or Cancel. ASMEnv sends
+the selected block or the whole buffer to the disk as ASMPRN.TMP. It then
+Exec's ASMPRN. After ASMPRN returns, the .TMP file is deleted and you're told
+the process is finished. You set the command switches in Print Setup. There
+is a stack of switch lines you set and this is kept in the .CFG file between
+sessions. If the bar is on Print Setup, or you are in the dialog, F1 gets
+information about the switches.
+
+Clipboard:   The clipboard is a transfer point for inter-editor copies or
+             cuts and pastes. I've altered TVEdit's clipboard to match TP's.
+That is, when you put something new in, what was there is not deleted but
+simply deselected and the new insertion begins on the next line. You can go
+back in and delete or deselect the current selection and select something
+you were copying out before. Perhaps a series of insertions was interrupted
+for a quick one. You can also use the Clipboard as a SCRATCH PAD. Type a
+trial entry. If it's right, Select it, and paste it into an editor. But
+remember to take it out, reselect what was selected, and put the cursor at
+the END, not the start, of the selection. That's so that something new put
+in will get its new line AFTER the selection. Of course, if you want your
+scratch piece to be the last entry, do nothing but be sure you've selected
+it front to end and DON'T select backwards after typing. Cursor must be
+at the end of the selection and at line end...so that NewLine works without
+pushing text. If you're at end of non-selected text, a new entry won't get
+a fresh line, so you might Enter to get a fresh line. The rule with selected
+text is that SelEnd = LineEnd = Cursor.
+
+On-Line Help: This .DOC file is sketchy and isn't intended to be a manual or
+              even "help" when you're working. It's something between a de-
+scription and a conversation. You'll find REAL help, context sensitive and
+detailed, on your F1 key. (The right mouse button opens help like F1 and
+closes it like ESC no matter where the mouse is.) Shift-F1 has the last "no 
+context" help , so that if you are in an Editor you get the Intro F1 would 
+get on the empty desktop blotter. And if you read the note in TA.BAT on the 
+distribution disk and set up that .BAT file and use it, you'll have Borland's 
+THelp.COM on ^F1. In fact, look at the TA386.BAT, Config.386, and AutoExec.386 
+files and see how to set up to have TD386 and TF386 from inside ASMEnv. In 
+the on-line help, you find how to "page" large (and other) files, how to use 
+a great variety of printers, including Postscript and Laserjet printers, as
+"line printers" or "highlighting" printers. In fact, the "manual" is in there
+in draft form.
+
+INFORMATION:
+
+I'm more or less contactable at The Re-Geniusing Project, 1432 Spruce St.,
+Berkeley, CA 94709. Sorry, no electronic addresses, you'll just have to
+put it on the U.S. Mule for carrying. I'm there sometimes, as are my col-
+leagues Crine Outlaud and Mr. Sprech, First Artificer of Enterprises, and
+others. C'n engage in shop talk, but of course can't wave source code
+around for reasons outlined above. If you're seeing this on somebody else's
+machine and want a copy, send ten bucks for disk, pack room on the Mule,
+and such, since the lot of us often can't scrape up the price of a box of
+disks. But, if you don't have it, don't NOT ask...we'll find it. And if,
+gawd willing, you want to underwrite further puttering with a non-required
+"license fee," ...we'll think of you as we empty dust out of and fill
+the coffee pot!
+                                                       -Gene Fowler
+                                                       July, 1993

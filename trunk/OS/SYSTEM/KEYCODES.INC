@@ -1,0 +1,17 @@
+;MTF00001.ASM Key Codes
+CR              EQU     0DH
+LF              EQU     0AH
+TAB             EQU     09H
+ESCAPE          EQU     1BH
+BS              EQU     08H
+BEEP            EQU     07H
+K_ESCAPE        EQU     1BH
+K_ENTER         EQU     0DH
+K_L_ARROW       EQU     75
+K_R_ARROW       EQU     77
+K_U_ARROW       EQU     72
+K_D_ARROW       EQU     80
+K_F3            EQU     61
+K_F5            EQU     63
+K_TAB           EQU     9
+K_BS            EQU     08H

@@ -1,0 +1,187 @@
+
+                            IN THE NAME OF GOD
+                    Welcome To MiniTAK Operating System
+
+This short help text explains some of the main commands of MiniMan.COM
+command interpreter and companion external commands.
+
+-----------------------------------------------------------------------------
+Main Internal Commands
+-----------------------------------------------------------------------------
+1) CLC
+Clears the screen.
+Syntax: CLS
+
+Description:
+No parameters is needed. CLS clears entire screen and places the cursor in the
+first row.
+
+2) DATE
+Displays or sets the date.
+Syntax: DATE [date]
+        date:        Specifies a new date to set as current date.
+Use DATE without parameters to display the current date and ask for a new date.
+
+Description;
+Use this command to see or set the current date of system. To see the current
+date type DATE without parameters and for the "new date" prompt, press ENTER
+without any input to keep the current date unchanged. To set the date, you can
+type a valid date string as date parameter or type DATE with no parameters to
+ask you for a new date. Valid date string is in the form mm/dd/yyyy.
+
+3) TIME
+Displays or sets the time.
+Syntax: TIME [time]
+        time:        Specifies a new time to set as current time.
+Use TIME without parameters to display the current time and ask for a new time.
+
+Description:
+This command can be used to display or set the current time of system. To
+display the current time use TIME with no parameters. To set the time, type
+the new time as the time parameter or type TIME without parameters to ask you
+for a new time. Valid time string is in the form hh:mm:ss.
+
+4) ATTR
+Displays or changes file attributes.
+Syntax: ATTR [+R|-R] [+A|-A] [+H|-H] [+S|-S] [drive:][path]filename
+
+        +R:          Set Read Only attribute
+        -R:          Remove Read Only attribute
+        +A:          Set Archive attribute
+        -A:          Remove Archive attribute
+        +H:          Set Hidden attribute
+        -H:          Remove Hidden attribute
+        +S:          Set System attribute
+        -S:          Remove System attribute
+With no parameters other than filename,ATTR displays file attributes.
+
+Description:
+This command can be used to change or view the attribute of files. This is
+important for example when you want to delete a Read Only or System File from
+the disk. Because of that write access to these types of files is denied, you
+can change file attribute to a normal file and delete it from the disk.
+If no drive or path is specfied, current drive and/or path is used.
+
+5) COPY
+Cpies a file.
+Syntax: COPY source destination
+
+        source:      Specifies the source file name to be copied
+        destination: Specifies the destination file name
+
+Description:
+Use this command to copy a file. Because of that in the current version of
+MiniTAK operating system only one drive (A:) is available, you should always
+specify a new name for the file.
+To copy a file from a disk to another disk in the same drive see COPYTO
+command.
+
+6) COPYTO
+Copies a file from a disk to another disk in the same drive.
+Syntax: COPYTO source destination
+
+        source:      Specifies the source file name on the first disk to be
+                     copied
+        destination: Specifies the destination file name on the second disk
+
+Description:
+COPYTO command can be used to copy a file from one disk to another disk using
+the same drive. Because of that in the current version of MiniTAK operating
+system only one drive (A:) is available, you can use this command to copy
+your files to other diskettes only by using drive A:. So you can specify a
+new filename for the destination file.
+During copy operation, this command prompts to change diskettes whenever
+nessacery.
+
+NOTE: Be careful while using this command. If you place wrong diskettes into
+      drive, it can lead to loss of data.
+
+7) DIR , LS
+Lists files of a directory on the disk.
+Syntax: DIR [drive:][path][filename] [/P] [/A[attrib]]
+        LS  [drive:][path][filename] [/P] [/A[attrib]]
+
+        filename:    Specifies the filename match string. You can use wildcard
+                     characters(*,?) in the filename.
+                     If no filename is defined,default will be *.*.
+        /P:          Lists files page per page.
+        /A:          Defines match attributes:
+                          R: Read Only        H: Hidden
+                          A: Archive          S: System
+                          D: Directory        -: Use as prefix meaning NOT
+                     Using /A with no attributes,will list files of any
+                     attribute.
+                 If you don't use /A switch,default attributes will be RAD.
+
+Description:
+Use this command to view list of files in a directory. DIR normally doesn't
+display hidden and system files in the result list. To view these files you
+can use /A switch.
+If no drive or path is specfied, current drive and/or path is used.
+
+8) DEL , ERASE
+Deletes one or more files.
+Syntax: DEL   [drive:][path]filename [/P]
+        ERASE [drive:][path]filename [/P]
+
+        /P:          Prompts for confirmation before deleting each file.
+
+Description:
+Use this command to delete unused files from the disk to free up disk space.
+You can use wildcard characters (*,?) in the filenme to delete more than one
+file with one command. So be careful when you use these characters.
+When you use /P switch in the command line, DEL asks you to confirm file
+deletion for each file.
+If no drive or path is specfied, current drive and/or path is used.
+
+9) RENAME
+Renames a file on the disk.
+Syntax: RENAME [drive:][path]filename [drive:][path]newfilename
+        REN    [drive:][path]filename [drive:][path]newfilename
+
+        filename:       Specifies an existing file on the disk.
+        newfilename:    Specifies a new valid name for the file.
+
+Description:
+Use this command to rename a file on the disk. No wildcard characters are
+allowed in the filename or newfilename.
+If no drive or path is specfied, current drive and/or path is used.
+
+10) MEM
+Displays current memory status.
+Syntax: MEM
+
+Description:
+This command displays some useful information of memory usage status (amount
+of total, free and used memory and the maximum executable program size).
+No parameters is needed.
+
+-----------------------------------------------------------------------------
+External Commands
+-----------------------------------------------------------------------------
+1) SYS.COM
+Copies MiniTAK system files and command interpreter(MINIMAN.COM) to a
+specified disk.
+
+Syntax: SYS drive:
+        drive:          Specifies the drive you want to make it a MiniTAK
+                        system disk.
+
+Description:
+This command can be used to transfer MiniTAK operating system to other
+diskettes.
+
+To use this command properly you should run it in a directory containing
+MiniTAK system files (MINIIO.SYS and MINITAK.SYS) and command interpreter
+program (MINIMAN.COM). SYS reads these three files into memory and prompts
+for a new blank formatted disk. After replacing the disk and pressing ENTER,
+SYS writes MiniTAK system files and command interpreter program to the new
+disk and makes it a MiniTAK bootable disk. Then you can use the new diskette
+to boot MiniTAK operating system.
+
+NOTE: The current version of SYS.COM only can work with floppy diskettes.
+
+Example: SYS A:
+
+*****************************************************************************
+*****************************************************************************

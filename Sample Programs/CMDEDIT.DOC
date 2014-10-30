@@ -1,0 +1,1169 @@
+
+                                  CMDEDIT.DOC
+
+                         Documentation for CMDEDIT.COM
+
+                          Command Editor Version 3.21.
+
+                                 21 March, 2003
+
+CONTENTS
+
+        * AUTHORS
+        * DISCLAIMER
+        * NOTE
+        * PURPOSE
+        * REQUIREMENTS
+        * SYNTAX
+        * SUMMARY OF OPTIONAL PARAMETERS
+        * SUMMARY OF EDITING COMMANDS
+        * DESCRIPTION OF OPTIONAL PARAMETERS
+        * DESCRIPTION OF SELECTED EDITING COMMANDS
+        * INTERNAL COMMANDS
+        * BRACE EXPANSION
+        * FILE ASSOCIATION
+        * CONFIGURATION FILE
+        * MISCELLANEOUS
+        * UPGRADING
+        * COMPILING THE SOURCE CODE
+        * VERSION HISTORY
+        * ACKNOWLEDGEMENTS
+        * BUGS
+
+
+AUTHORS
+        The original "CMDEDIT V2.0" by Ashok P. Nadkarni appeared in
+        PC Magazine, Vol. 9, No. 16
+
+        Extensions by:
+        David Abbott            dfa@muon.ph.unimelb.edu.au
+        Wayne Davison           davison@borland.com
+
+        Jason Hood              jadoxa@yahoo.com.au
+        (The addresses above didn't work for me.)
+
+
+DISCLAIMER
+        Although the authors of the extensions to this program and its
+        documentation have spent time testing their modifications, they make
+        no warranties either expressed or implied regarding the modifications
+        made, their suitability for any purpose, or even that they will
+        function as expected.  In no event shall these authors be liable for
+        any damage caused by the use of, or any defects within, the software.
+
+
+NOTE
+        This version of CMDEDIT is an update of CMDEDIT 2.0 j3, which was a
+        modification of CMDEDIT 2.0 e6, which supersedes both of the following
+        versions:
+        CMDEDIT 2.0 with extensions by D. Abbott at version 5, and CMDEDIT
+        2.1wd (an extension of CMDEDIT 2.0 by W. Davison).
+
+        See also the UPGRADING and VERSION HISTORY sections of this document.
+
+
+PURPOSE
+        A TSR (terminate & stay resident) utility that supplies full editing
+        features to the DOS interface; stacks commands and drive/directory
+        pairs for recall; supports definable symbols and variables, and
+        programmable function-key definitions and macros; provides optional
+        autocompletion of commands and filenames, along with executable
+        extensions and directories; and enables changing drives and
+        directories simultaneously.  Brace expansion and multiple commands
+        on the one line are also supported.
+
+
+REQUIREMENTS
+        DOS 5+, 286+.
+        Contact me (Jason Hood) if you would like less requirements.
+
+
+SYNTAX
+        CMDEDIT [-abcefgijknoqrtxz] [/u] [/pX] [/lN0]
+                [/hN1] [/mN2] [/sN3] [/dN4] [filename]
+
+        Remark:
+        CMDEDIT can be entered at the DOS prompt, but is normally installed
+        through the AUTOEXEC.BAT file.
+
+
+SUMMARY OF OPTIONAL PARAMETERS
+
+        /a The following /tzhms options are for applications
+        /b Disable appending backslash when completing directory name
+        /c Swap cursor type used in insert and over-type modes
+        /e Matching an empty string will act like history (cursor at end)
+        /f Disable long filename completion (default enabled)
+        /g Use silent mode (default beeps on error)
+        /i Use insert mode (default over-type)
+        /j Prevent CMDEDIT from loading itself in high memory
+        /k Keep buffers across DOS Windows sessions (default separate buffers)
+        /n No existence check (default checks for previous install)
+        /o Do not install (default will install if not already)
+        /q No installation or status messages (default display messages)
+        /r Auto recall mode (default off)
+        /t Disable all macro and symbol translation (default enabled)
+           Enable application translation (default disabled)
+        /u uninstall CMDEDIT from memory if possible
+        /w Use alternate error message display
+        /x Keystrokes are read in via a raw read
+        /z Disable CMDEDIT (default enabled)
+
+        /p Set the ignore macro character (default X is ;)
+        /l Minimum command length to store in buffer (default N0 is 1)
+
+        /h History (command stack) buffer size (default N1 is 512 bytes for DOS;
+           64 bytes for application)
+        /m Macro buffer size (default N2 is 512 bytes for DOS; 0 for app)
+        /s Symbol buffer size (default N3 is 512 bytes for DOS; 0 for app)
+        /d Directory Stack size (default N4 is 128 bytes)
+
+  filename Configuration file to read at start-up (default none)
+
+
+SUMMARY OF EDITING COMMANDS     ^ = Ctrl, # = Shift, @ = Alt
+
+        ^U or Up-Arrow          Recall previous command in history buffer
+        ^N or Down-Arrow        Recall next command in history buffer
+        ^F or Right-Arrow       Cursor forward (character)
+        ^B or Left-Arrow        Cursor backward (character)
+        ^Right-Arrow            Cursor forward (word)
+        ^Left-Arrow             Cursor backward (word)
+        @Right-Arrow            Cursor forward (string)
+        @Left-Arrow             Cursor backward (string)
+        ^E or End               Cursor to end of line
+        ^A or Home              Cursor to start of line
+        ^D or Del               Delete character at the cursor
+        ^H or Backspace         Delete previous character
+        ^T                      Swap character under cursor with previous char.
+        ^W                      Delete word at right of cursor
+        ^L or ^Backspace        Delete word at left of cursor
+        ^[ or ESC               Erase entire command line
+        ^C                      Cancel entire command line
+        ^BREAK                  Terminate a running macro
+        ^K or ^End              Delete from cursor to end of line
+        ^X or ^Home             Delete from cursor to start of line
+        ^O                      Delete from cursor to EOL and execute line
+        ^G                      Erase entire line but keep in stack
+        ^^ (CTRL-6)             Execute line, but do not store or
+                                display (for passwords)
+        INS                     Toggle insert/over-type modes
+        ^I or TAB, #TAB         Expand partial filename or directory name
+        ^J                      Replace variables with values, expand braces
+                                and associate files
+        ^Q                      Place succeeding CTRL-key on line
+                                as literal instead of command
+        ^R                      Recall matching command from hist. buffer
+        ^V                      Same as ^R but searches forward through history
+        ^Y                      Toggles auto-recall mode on/off
+        ^Z                      Put end-of-file marker on line
+        ^_ (CTRL-underscore)    Toggles macro and symbol translation off/on
+        ^S or ^]                Command separator
+        ^\                      Toggles long filename completion off/on
+
+
+DESCRIPTION OF OPTIONAL PARAMETERS
+
+        Option /a       Application options
+
+        CMDEDIT maintains two separate states for DOS and applications. This
+        option selects the application state. It applies to macro translation,
+        disable CMDEDIT and the history, macro and symbol buffers (/tzhms).
+        For example: cmdedit /s700 /ats100 sets a symbol size of 700 bytes for
+        DOS, enables macro translation for applications and uses 100 bytes for
+        application symbols.
+
+
+        Option /b       Append backslash toggle
+
+        This toggle disables/enables the appending of a backslash to directory
+        names when using filename completion.  If backslash appending is
+        disabled, nothing at all is appended to directory names but a space is
+        still appended to regular filenames.
+
+        Default: CMDEDIT normally appends a trailing backslash to a directory
+                 name.
+ 
+
+        Option /c       Cursor type exchange
+
+        Swap cursor types usually used in insert and over-type modes.  The
+        default over-type mode cursor is an underscore, whilst the default
+        insert mode cursor is a block.
+
+
+        Option /e       Empty match acts like history
+
+        When using the match commands, the cursor usually remains at the
+        same position. This option will move the cursor to the end of the
+        string if matching an empty line, the same as the history commands.
+
+
+        Option /f       Long filename completion toggle
+
+        Disables long filename completion (for systems that have it).
+        Default: CMDEDIT normally completes long names.
+        This option can also be toggled by typing ^\ (CTRL-backslash) while
+        CMDEDIT is running.
+
+
+        Option /g       Go silent
+
+        This will suppress the error beep when an error occurs.
+
+ 
+        Option /i       Insert mode for editing
+
+        Use insert mode when editing.
+        The default editing mode is over-type.
+
+
+        Option /j       Don't load high
+
+        Prevent CMDEDIT from loading itself high when installing.
+
+
+        Option /k       Keep buffers across DOS Windows sessions
+
+        In Windows (or equivalent multi-tasking environment), CMDEDIT will
+        separate the buffers for each DOS-box (ie. each will have its own
+        history, symbol, macro and directory buffers). This option will
+        cause these buffers to be shared for all DOS-boxes (or preserve them
+        when closing and re-opening a single DOS-box).
+
+
+        Option /n       New installation
+
+        This will install CMDEDIT without checking for a previous
+        installation. This option forces the current invocation to remain
+        resident - even if CMDEDIT is already resident.
+
+        Default: Before CMDEDIT makes itself resident it will check to see
+        whether it has already been installed. If it is installed already then
+        it will not install itself again.
+
+
+        Option /o       Option change only mode
+
+        This prevents the current invocation of CMDEDIT becoming resident even
+        if it cannot detect a resident incarnation.  This may be useful when
+        changing CMDEDIT options from a batch file.  If CMDEDIT had not
+        previously been installed, the new invocation would normally make
+        itself resident which may not be desired;  /o prevents this.
+
+        Default: CMDEDIT installs itself as a TSR if it does not detect an
+        already resident incarnation.
+
+
+        Option /q       Quiet
+
+        CMDEDIT usually displays a message when installing, or after
+        updating options. This option prevents the message being displayed.
+        (Note that when uninstalling, you must use "/qu", not "/uq".)
+
+
+        Option /r       Auto-Recall mode enable
+
+        A history buffer search is made as each letter is typed in.  Note that
+        command lines shorter than the minimum number of characters specified
+        with the /l switch are not stored on the stack.  This option can also
+        be toggled using ^Y after CMDEDIT has been loaded.  For a more
+        complete description, see the ^Y command later in this document.
+
+
+        Option /t       Translation disable toggle
+
+        Disables all macro and symbol translation, brace expansion, internal
+        commands, multi-commands and file associations.
+        Default: Translation is enabled for DOS, disabled for applications.
+        This option can also be toggled by typing ^_ (CTRL-underscore) while
+        CMDEDIT is running.
+
+
+        Option /u       Uninstall CMDEDIT from memory
+
+        Disables CMDEDIT and removes it from memory if possible (i.e. if no
+        other TSR's have been loaded after CMDEDIT).
+
+
+        Option /x       Use a raw getkey function
+
+        Modifies the getkey function to read raw keystrokes.  This allows the
+        entry of ^P, which functions the same as the ^U key.  To toggle printer
+        logging, type ^C ^P.  To type a ^C while at the command prompt, press
+        ^C ^C.  During program execution ^P and ^C are not changed from their
+        normal behaviour.
+
+
+        Option /z        Zero interference
+
+        This toggle disables CMDEDIT completely, but leaves it resident.
+        To re-enable CMDEDIT, call with /z a second time.
+
+
+        Option /p<char>         Prefix character for translation ignoring
+
+        This sets the ignore macro character. If this character is the first
+        character on the input line (thus prefixing the input) then no macro
+        substitution or brace expansion will be performed, and the internal
+        commands will be disabled.  You can define the macro ignore character
+        to be a space.  To do this, however, you must put it in quotes,
+        i.e. use  CMDEDIT /p" ".
+
+        Default: ";"
+
+
+        Option /l<length>       Length of command to store in history buffer
+
+        Sets the minimum length for command lines which are to be stored in
+        the DOS history buffer (command stack) to <length>.  Thus command
+        lines with less than <length> characters are not stored.
+        Default: 1  (i.e. all commands are stored).
+
+
+        Option /h<size>         History buffer size
+
+        Sets the size of the DOS history buffer (command stack) to <size>
+        bytes.
+        Default: 512 for DOS, 64 for applications
+
+
+        Option /m<size>         Macro buffer size
+
+        Sets the size of the macro buffer to <size> bytes.
+        Default: 512 for DOS, 0 for applications
+
+
+        Option /s<size>         Symbol Buffer size
+
+        Sets the size of the symbol buffer to <size> bytes.
+        Default: 512 for DOS, 0 for applications
+
+
+        Option /d<size>         Stack for directories
+
+        Set the directory stack size to <size> bytes.
+        Default: 128
+
+
+        filename                File for configuration
+
+        Configuration file to read at start-up.  See the CONFIGURATION
+        FILE section later in this document.
+        Default: <none>
+
+
+        Also see MISCELLANEOUS.
+
+
+DESCRIPTION OF SELECTED EDITING COMMANDS
+
+
+        ^U or Up-Arrow
+
+        Puts the previous command from the DOS history buffer (relative to the
+        current pointer in the buffer) onto the command line. If there is no
+        previous command in the buffer then an error beep is issued and the
+        buffer pointer is returned to the last command executed (i.e. the
+        stack behaves in a cyclic manner).  The beep can be avoided by
+        starting CMDEDIT with the /g silent mode toggle.
+
+
+        ^N or Down-Arrow
+
+        Analogous to above, but steps forward in the history buffer.
+
+
+        INS             toggle mode type
+
+        Toggles the command line editing mode between insert mode and
+        over-type mode. Inserting a character in insert mode will push all
+        characters including the one under the cursor one place to the right
+        and then insert the typed character.
+
+
+        ^[ or ESC       erase line
+
+        This erases the command line.  Useful for erasing all rubbish on the
+        command line and starting anew.
+
+
+        ^C and ^BREAK
+
+        ^C will cancel a line, or terminate the current command in a running
+        macro.  In the latter case, macro execution will continue with the
+        next command.  ^BREAK will completely terminate a running macro.
+        Note that the /x switch modifies this default ^C behaviour.
+
+
+        ^G              copy line & erase line
+
+        This copies the current line into the history buffer and then erases
+        it. This is useful when you do not want to execute what you've just
+        typed but still want to remember it for later use.
+
+
+        ^^              execute line & erase line
+
+        This will execute your input but will erase the line and not copy it
+        into the history buffer. Useful if you do not want CMDEDIT to remember
+        a typed password for others.
+        On a PC, this keystroke is equivalent to CTRL-6.
+
+
+        ^I or TAB, #TAB   filename completion
+
+        CMDEDIT examines the word to the left of the cursor and tries to
+        complete its filename. The word may contain a full disk and path
+        specification. If several files match, only the common part of their
+        names will be placed on the command line.  If no further characters
+        can unambiguously be added to the line and TAB is struck, CMDEDIT
+        behaves in one of two ways depending on the mode.
+
+        In list mode, a list of all possible matching filenames is displayed.
+        In cycle mode, if no more characters can be added the line will be
+        left unchanged;  otherwise subsequent consecutive TAB's will cycle
+        through all possible matches.
+
+        ^I/TAB defaults to cycle mode; #TAB is list mode.  The accompanying
+        CMDCFG program can be used to change this behaviour.
+
+        If the name to be completed is the first word on the line, then only
+        executables and directories will be selected. Executables can be
+        defined with the "FEXEC" environment variable (but see FILE
+        ASSOCIATION). The default list is
+
+                FEXEC=exe.com.bat
+
+        If it's not the first word then certain extensions will be ignored.
+        These can be selected with the "FIGNORE" environment variable.  The
+        default list is:
+
+                FIGNORE=exe.com.obj.o.bak
+
+        If a file with an ignored extension is the only such file, then it
+        will be selected.  Extensionless files can be ignored by using an
+        extra dot ("exe.com.obj.o.bak." for example).
+
+        If the matching name is a directory, a \ or / is appended, making
+        it easier to enter a complete path specification (unless this has been
+        disabled with the /b command line option, in which case nothing is
+        appended).  If the matching name is not a directory, then a space is
+        placed after the name.
+
+        Note that if you are using the DOS cd command to change directories,
+        the trailing backslash will cause an error.  You can either delete the
+        added slash, use CMDEDIT's own directory commands which permit a
+        trailing slash, or make use of the dosify function (see the @ internal
+        command).  Remember you can also define a symbol string if you would
+        like to replace or modify DOS's cd command as follows:
+
+                defs cd chd
+        or      defs cd @cd
+
+
+        ^\              toggle long filename completion
+
+        Normally, CMDEDIT completes long names (on systems that have it), but
+        if you have a particularly long path, or an old program, the short
+        name might be required. This option toggles between short and long
+        filename completion, equivalent to the command line toggle /f.
+
+
+        ^J              inline expansion
+
+        Brace expansion, variable replacement, file association and one level
+        of macro and symbol expansion occur immediately, in that order.  In
+        the case of macros, the first line is expanded and the rest of the
+        macro is ignored.  Variables (both CMDEDIT symbols and environment)
+        should be enclosed in % signs as they would be in batch files.  CMDEDIT
+        automatically expands environment variables when executing commands
+        even if the ^J command is not used.  ^J is useful, however, to see
+        exactly how a command line is expanded before executing it, or to
+        modify the expansion.
+
+
+        ^Q              quote next character
+
+        If you intend to put any of the characters onto the command line which
+        are usually interpreted as commands by CMDEDIT (for example most
+        control key combinations) then you should precede them immediately
+        with ^Q.  For example:  To put ^T as a character on the command line
+        you should type ^Q^T.  Note that this will not work with ^S, since
+        it will still be treated as a command separator;  either place it in
+        quotes, disable translation, or precede it with a percent (%).
+
+
+        ^R              recall matching command (backward search)
+
+        Commands beginning with one or more user-typed letters can be recalled
+        with this command.  CMDEDIT searches backwards through the history
+        buffer, successively placing each matching older command on the command
+        line with each ^R issued.
+
+
+        ^V              recall matching command (forward search)
+
+        Similar to ^R, but searches forward through the history buffer.
+
+
+        ^Y              auto-recall mode toggle
+
+        CMDEDIT continuously tries to match the current line with the most
+        recent match from the history buffer.  As you keep typing, CMDEDIT
+        will keep replacing the line with the most recent line from the history
+        buffer that matches the characters you have typed up to that point.
+        When the line displayed matches the one you want to execute, simply
+        hit Enter.  If as you type on there is no longer any possible match in
+        the history buffer, the remainder of the line is cleared from the
+        cursor (possibly erasing a previous partial match).  The easiest way
+        to learn how this works in practice is to try it out.
+        Auto-recall can also be toggled using the /r command line switch.
+
+
+        ^_              toggle macro translation
+
+        This toggles macro and symbol translation on/off in a manner similar
+        to the /t command line toggle.
+        On a PC this keystroke is equivalent to CTRL-minus.
+
+
+        ^S or ^]        Command separator
+
+        This allows multiple commands to be entered on the one line.  The 
+        symbol is used to separate commands - everything before it is the
+        first command, everything after it is the second.  So "ab" is the
+        two commands (or macros/symbols) "a" and "b", but "a  b" is the two
+        commands "a " and " b".  Be aware of that when using /p" ".
+        Command separation will not work within symbols and macros, since
+        that's what macros are for, anyway.  (Also see ^Q Quote.)
+
+
+INTERNAL COMMANDS
+
+        Internal CMDEDIT commands are given on the command line after the DOS
+        prompt. A command is always the first word on the command line. All
+        words following a command are called parameters.
+
+
+        DEFS <symbol> <string>
+
+        The DEFS command allows abbreviating a long command (the string) with
+        one or more characters (the symbol).  Some people may be more familiar
+        with the term alias in this context.  By using F1...F0 (for F10) and
+        SF1...SF0 as the symbol values, the function and shifted function keys
+        can be programmed to output strings on the command line. If these
+        strings end in the @ character they will be executed, as well.  To be
+        expanded into its defined string, a symbol must be the first word on
+        the command line.  Before being passed to DOS or to an application the
+        command line is scanned recursively, so one symbol can define another.
+
+        Example:        DEFS dw dir /w
+
+        Here, "dw" is the <symbol> and "dir /w" the <string>.
+
+        Example:    DEFS F1 c:\dos\help.com
+
+        Hitting F1 will now put "c:\dos\help.com" on the command line.  If
+        an @ character appeared after the definition, the line would also
+        be executed without the need to hit Enter.
+
+        See also FILE ASSOCIATION.
+
+
+        DEFM ... ENDM
+
+        Multi-line command macros are created by issuing the DEFM macro-name
+        command.  Each line is terminated by hitting Enter, and the macro is
+        terminated with the ENDM command.  Macro command lines may contain
+        parameters, which are designated by %n (n is a numeral from 1-9).
+        Parameters are processed much as in DOS batch files.   Up to nine
+        parameters can be defined in this way.  If you don't want a %n
+        sequence in a macro to be treated as a parameter, simply indicate the
+        % character as %%.  %n* is shorthand for parameter n and all parameters
+        after it.  %* is shorthand for %1*.  Note that it just copies the rest
+        of the line from the desired parameter, similar to symbols.  Macros
+        and symbols also support the use of string variables, which must be
+        enclosed within % signs.
+
+        Macros support many DOS batch file commands such as ECHO, PAUSE, IF,
+        and FOR (but not GOTO or SHIFT).  Embedded spaces and tabs in macro
+        command line arguments must be enclosed in pairs of quotes ("). Macros
+        cannot be nested, and one macro can call another only from the last
+        line before ENDM.
+
+        Macros and symbols may be deleted by name with the DELM and DELS
+        commands, respectively, and the respective CMDEDIT buffers can be
+        cleared and reset with the RSTHIST, RSTSYM, RSTDIR, and RSTMAC
+        commands.
+ 
+
+        BACK
+
+        Changes to the previous directory entered via one of CMDEDIT's other
+        directory changing commands (e.g. CHD or even BACK itself).  The
+        directory does not need to be on the directory stack (i.e. you do not
+        need to use PUSHD).
+
+
+        CHD [d:][path]
+
+        The CHD command allows changing to a drive and directory
+        simultaneously without affecting the directory stack.  It also
+        accepts a trailing backslash on directory names.
+
+
+        PUSHD [d:][path]
+        POPD
+
+        The PUSHD command changes to the specified directory and stacks the
+        previous drive/path name on the directory stack. If at least one path
+        has been pushed into this buffer, entering PUSHD without parameters
+        toggles between the current and the last stored pair. POPD changes to
+        the last drive/directory pair and removes it from the stack.  See also
+        the BACK command.
+
+
+        DELM,  DELS
+        RSTHIST,  RSTSYM,  RSTMAC,
+        RSTDIR
+
+        Macros and symbols may be deleted by name with the commands DELM and
+        DELS, respectively, and the respective CMDEDIT buffers can be cleared
+        and reset with the RSTHIST, RSTSYM, RSTDIR, and RSTMAC commands.
+
+
+        @
+
+        When used at the start of a line, @ is a special command line
+        modifier which asks CMDEDIT to "dosify" the line.  CMDEDIT will
+        replace / by \, leading -'s by / and remove trailing
+        backslashes from the line. This can be useful if you are used to
+        UNIX conventions, or to avoid trailing backslash errors.
+        It is possible to use @ in symbol definitions to automatically dosify
+        lines when particular commands are used, for example:
+                defs rd @rd
+        Be careful if you do this for commands that have switches however.  If
+        you then use / as the switch character, it will be changed to \ which
+        is probably not what you wanted.  You are safe only if you always use
+        '-' as the switch character.
+
+
+BRACE EXPANSION
+
+        Brace expansion is usually used as a shorthand method of naming files.
+        Instead of having to say:
+
+        rm /temp/file1.tmp /temp/file2.tmp
+
+        you can say:
+
+        rm /temp/file{1,2}.tmp
+
+        The list inside the braces must be comma-separated, and it will
+        recognise spaces:
+
+        rm /temp/file{1, 2}.tmp
+
+        will expand to:
+
+        rm /temp/file1.tmp /temp/file 2.tmp
+
+        Braces can be nested, and the expansion will also recognise commas,
+        semi-colons and plus signs as separators:
+
+        tc file1;temp{2,3},exclude{4,5}
+
+        will become:
+
+        tc file1;temp2;temp3,exclude4,exclude5
+
+
+FILE ASSOCIATION
+
+        Directories and certain extensions can be directly executed from the
+        command line.  If the first word on the line ends in either a slash
+        or backslash (ie. "/" or "\") it will be treated as a directory and
+        have the expansion of the backslash symbol inserted and the trailing
+        (back)slash will be removed:
+
+        defs \ @cd
+        utils/
+
+        will become:
+
+        @cd utils
+
+        If the first word contains an extension, it will search the symbols
+        for that extension and insert the expansion.  The symbol must start
+        with a dot (".") and can contain a dot-separated list of extensions.
+        For example, if I define "defs .txt.doc type" then text files will be
+        associated with type:
+
+        cmdedit.doc
+
+        will expand to:
+
+        type cmdedit.doc
+
+        Or perhaps:
+
+        defs .txt.doc text
+        defm text
+        type %1 |more
+        endm
+
+        Extensionless files can be associated by using an extra dot:
+                defs .c.asm. tde
+        will associate C, assembly and extensionless files to tde.  However,
+        remember to type the dot yourself; filename completion doesn't add it.
+
+        An alternative association can be made by appending '=' to the
+        extension:
+
+        defs .txt.doc less
+        defs .txt=.doc= tde
+
+        cmdedit.doc     ==>     less cmdedit.doc
+        cmdedit.doc=    ==>     tde cmdedit.doc
+
+        Filename completion will search the extension lists if it cannot find
+        the extension in FEXEC.  It also means that the ".." symbol might
+        result in unwanted completions; use a ".." macro instead.
+
+
+CONFIGURATION FILE
+
+        A configuration file can be used to load regularly-used macros,
+        symbols and commands.
+
+        In configuration files, lines beginning with a minus (-) and blank
+        lines are ignored, unless they are part of a macro definition.  The
+        file can contain anything: if it's a CMDEDIT internal command, it will
+        be executed; anything else will be stored in the history.  The format
+        of the commands in the file is the same as if you typed them from the
+        command prompt.
+
+        The special comment "-@" will cause subsequent lines to be placed
+        in the application buffers.
+
+        Note that the ENDM command is followed by the macro name it
+        terminates. This is optional, as CMDEDIT ignores all following
+        characters on a line whose first word is ENDM.
+
+        When defining macros and symbols, keep in mind the important
+        differences in the way command line arguments are handled. With a
+        symbol, the rest of the command line is appended to the definition
+        string when it is executed.  A macro on the other hand uses the %n
+        parameters like DOS batch files.  Thus the following are essentially
+        equivalent:
+
+        defs d dir/w
+
+        and
+
+        defm d
+        dir/w %1 %2 %3 %4 %5 %6 %7 %8 %9
+        endm
+
+        or
+
+        defm d
+        dir/w %*
+        endm
+
+        But without the %n's, the macro definition would ignore any command
+        line arguments.
+
+        See also the example configuration file CMDEDIT.CFG.
+
+
+MISCELLANEOUS
+
+        - Executables
+
+        There are four .com files:
+          CmdEdit  - no directory commands; no internal prompt
+          CmdEditd - directory commands; no internal prompt
+          CmdEditp - no directory commands; internal prompt
+          CmdEdtdp - directory commands; internal prompt
+
+        The directory commands are the /d option, BACK, CHD, PUSHD, POPD and
+        RSTDIR.  The internal prompt is equivalent to $P$G, but in lower-case
+        (unless LFN) and colour, with slashes instead of backslashes.  For
+        this to work, the PROMPT variable must have no effect on the cursor
+        (ie. the cursor must be at the left edge of the screen).
+        Currently the colours are fixed, but if there is enough interest, I'll
+        add options to change them. (See CMDEDIT.ASM - Note on CMD_PROMPT.)
+
+
+        - Option toggling after installation
+
+        The following switches can be used to toggle or change options after
+        CMDEDIT has been installed:
+
+                -bcefgiortxz /l /p
+
+        For example, to turn the beep off/on, use CMDEDIT /g.  An option can
+        be explicitly turned on or off by prefixing with '+' or '-'.  For
+        example, to turn the beep off use CMDEDIT /+g.  '+' has the same
+        effect as described in the help screen; '-' will set the default.
+
+
+        - Displaying the buffers
+
+        Use the buffer switches to display them:
+
+                /[a]hmsd
+
+        These can be used in conjunction with the above.  Note that the order
+        is always: history, symbols, macros, directories, application history,
+        symbols and macros, irrespective of the order given.
+
+
+        - Buffer sizes
+
+        To see the actual amount of memory used by the buffers, follow the
+        buffer letter (as mentioned above) with a question mark ('?').
+
+
+        - Current status
+
+        If CMDEDIT is run with no options, and is already installed, the
+        current status will be displayed.  The status will also be displayed
+        when any of the options are used (unless /q is also used).
+
+
+        - Customising CMDEDIT control keys
+
+        The CMDEDIT control keys may be customised using the CMDCFG
+        program.  See CMDCFG.DOC for more details.
+
+
+        - Avoiding conflict in other programs
+
+        The /at and /az switches were added for the benefit of some programs
+        which have an interactive command input mode in which CMDEDIT is still
+        active.  In these cases, symbol expansion is probably not desired as
+        it could conflict with the other program's own commands. Auto-recall
+        mode can also lead to similar problems.  In some cases, the regular
+        history facility may also interfere, in which case you should use the
+        option /z to disable CMDEDIT completely.  When these problems are
+        known to occur it is probably a good idea to call the application from
+        a batch file. Here is an example:
+
+        MYEDITOR.BAT :
+
+        CMDEDIT /oa-t
+        REM or CMDEDIT /oa+z
+        REM or CMDEDIT /a+t-z d:\mypath\myeditor.cfg
+        REM
+        REM Run application here, e.g.:
+        myeditor myfile.txt
+
+        Macro and symbol translation, brace expansion, internal commands,
+        multiple commands, file association and variable expansion are
+        disabled by default.  The macro translation toggle key can be used to
+        re-enable them.  The third line above is useful for applications that
+        can benefit from CMDEDIT, ensuring translation is on and CMDEDIT is
+        active.  The first lines in myeditor.cfg should be:
+
+        -@ Use application buffers and reset previous application's buffers.
+        rstmac
+        rstsym
+
+
+        - Environment variables
+
+        DOS 7 (Win95) also expands environment variables, so if you have
+        a truncation error, use two percents:
+
+        path d:\new\path;%%path%%
+
+
+UPGRADING
+
+        Upgrading from CMDEDIT2e5:
+
+        The /k command line switch has been removed (use CMDCFG).
+        ^T macro disable toggle has been moved to ^_ (CTRL-underscore).
+        Lots of new stuff - read the entire document.
+
+        Upgrading from CMDEDIT21wd:
+
+        The /n command line switch has been moved to /l.
+        Lots of new stuff - read the entire document.
+
+        Upgrading from CMDEDIT2e6 and 2j1:
+
+        Options /k and /y have been removed (use CMDCFG), as have internal
+        commands CMDSTAT, HISTORY and DIRS (use the /smhd switches).
+
+        All versions above:
+
+        Some switches have moved:
+                /b -> /s
+                /d -> /h
+                /s -> /d
+                /f -> removed (no switch required)
+
+        TAB cycles filename completion by default.
+
+        All versions:
+
+        ^\ toggles long filename completion by default.
+
+        Upgrading from CMDEDIT2j3 and earlier:
+
+        Option /a has moved to /b.
+
+        Upgrading from CMDEDIT 3.14 and earlier:
+
+        Configuration names FullWordLeft and FullWordRight have been renamed
+        to StringLeft and StringRight.
+
+        Upgrading from CMDEDIT 3.15 and earlier:
+
+        /w has been removed (silently ignored). CMDEDIT now loads itself high,
+        so either remove LOADHIGH/LH or add /j to your AUTOEXEC.BAT. /a now
+        selects application state (use /ahN instead of /aN).
+
+
+COMPILING THE SOURCE CODE
+
+        The complete source code for CMDEDIT is included in this package
+        (unless you have obtained an incomplete version from an "unofficial"
+        source).  It is not necessary to be able to compile the source code to
+        use this program, as an executable CMDEDIT.COM is already included in
+        the package.
+
+        To compile you will require a Microsoft compatible assembler.
+        Four different "make files" are included:
+        MAKEIT.BAT  - for use with Borland's Turbo Assembler
+        MAKEFILE    - for use with Borland's Make and Turbo Assembler
+        MAKECMD.BAT - for use with Microsoft's Macro Assembler
+        CMDEDIT.MAK - for use with Microsoft's Quick Assembler
+
+        As they stand, these will produce CMDEDIT.COM with the directory
+        commands (the makefile produces CMDEDITD.COM).  To have a version
+        without the directory commands use "make -DNODIRS" (add -B if already
+        compiled) for Borland Make; or uncomment the NODIRS environment
+        variable for MAKEIT.BAT (or define it on the command line). Similarly,
+        use CMD_PROMPT for a version with the internal prompt.
+
+        It is also possible to assemble for less than 286, by changing the
+        equate in COMMON.INC.  For a pre-DOS5 version, some changes have to be
+        made; contact me at jadoxa@yahoo.com.au and I'll do a customized
+        version for you.
+
+        The CMDEDIT.COM included with this release was compiled with TASM,
+        which produces slightly smaller code than the Microsoft Quick
+        Assembler due to nop squishing.  (Actually, it was compiled with TASM
+        because I don't have anything else.)
+
+
+VERSION HISTORY
+
+        Extensions by D. Abbott - v1 and v2
+
+        Never released
+
+
+        Extensions by D. Abbott - v3 (Jan 14, 1991)
+
+        This version is identical to that published as CMDEDIT v2.0, with the
+        exception of the options /c, /l, /w, /o, /t and /z added by David
+        Abbott, Nov/Dec 1990.  A bug in the installation code that resulted in
+        false reports of an already resident version has also been partially
+        fixed.
+
+
+        Extensions by D. Abbott - v4 (May 11, 1991)
+
+        Added the /k switch for the benefit of those used to the Unix C-shell
+        'filec' filename completion (which uses the ESC key rather than TAB).
+
+
+        Extensions by D. Abbott - v5 (July 14, 1991)
+
+        Added the /n switch to counter installation problems in some
+        situations where CMDEDIT incorrectly detects that it is already
+        installed.  Added instructions for running CMDEDIT with Windows 3.0
+
+
+        CMDEDIT 2.1wd (an extension of CMDEDIT 2.0 by W. Davison)
+
+        This version, like D. Abbott's extended version, was an
+        independently developed extension of the original CMDEDIT 2.0.
+        It included the additional internal commands BACK, DIRS, and HISTORY,
+        as well as the listing of matching filenames when multiple
+        possibilities exist.  The command stack was made cyclic, and this
+        version also included command options /c and /n which functioned in a
+        similar way to D. Abbott's /c and /l respectively.  A ^T command to
+        swap characters under the cursor was also added.
+
+
+        Extensions by D. Abbott and W. Davison - v6 (June 1992)
+
+        This version is a complete merger by David Abbott, with the
+        co-operation of Wayne Davison, of the two versions described above.
+        All the features of both versions are included, and some additional
+        enhancements and bug fixes have also been made by Wayne and me.  If
+        you are upgrading from either of these versions, make sure you read
+        the UPGRADING section of this document, which details some minor but
+        important changes.  Note also that a control-key customisation program,
+        CMDCFG.EXE is also included with this release.
+
+
+        Extensions by Jason Hood - v1 (March 1997)
+
+        In no particular order:
+        Added support for Windows and task switchers. Added FEXEC and FIGNORE
+        to filename completion. Added brace expansion. Added command separator.
+        Reorganised files so TSR takes less memory. Added conditional compile
+        of directory commands. Modified installation to recognise high memory.
+        Almost totally rewrote CMDCFG.{C,DOC}. Added some extra keys and
+        functions. Added save to file to HISTORY and CMDSTAT. Added separate
+        64-byte buffer for applications' history (and corrected a bug in
+        finding the DOS segment). Modified error message - now only displays
+        "Macro aborted" if a macro is playing. Now honours the caller's line
+        length. Added '*' to macro parameters and removed the quote-stripping.
+
+
+        Extensions by Jason Hood - v2 (November 1998)
+
+        Bugs fixed: macro %* parameter; brace expansion DOS delimiters;
+        actually disable brace expansion with macros; ^Z allowed in
+        configuration file; DEFM table full when reading from file; dosify
+        trailing backslash; recognize Win95 Close command; Default function;
+        transpose in overwrite mode.
+
+        Enhancements: use DOSKey interface; automatically disable macro
+        translation in applications; disabling macros also disables multiple
+        commands; concatenation of options and display the bad option letter
+        when error; added cooked/raw mode (/x) toggle; added history to
+        configuration file; display which table is full; accomodate various
+        screen widths when displaying filename list; various size
+        optimizations, tidied source; used some 286 instructions; display
+        the DOS line directly to screen; escape the separator (^S) character;
+        expand variables function also expands symbols and the first line of
+        a macro; transpose at beginning of line.
+
+        Removed: options /k and /y; internal commands HISTORY, CMDSTAT and
+        DIRS.
+
+        Added: supplied executables require DOS5+, 286+; buffers can be
+        displayed using the /hsmd options (allowing for full redirection);
+        file associations (executable directories and extensions); internal
+        prompt.
+
+
+        Extensions by Jason Hood - v3 (May 1999)
+
+        Bugs fixed: SETting FEXEC would ignore the associations; allow dosify
+        and macro ignore to work with associations.
+
+        Enhancements: numerous size optimizations; completion recognizes
+        wildcards.
+
+        Added: support for long filenames.
+
+
+        CMDEDIT 3.12 by Jason Hood (April 2001)
+
+        Enhancements: don't add closing quote for completed directories;
+        disable (/z) works on DOS; display symbol/macro buffer size used
+        (/s?m?); alternative association (append '='); application history has
+        same functionality as DOS history.
+
+        Added: /k option to share buffers with multiple DOS boxes; /? help
+        screen; /q quiet option; /e so matching empty strings acts like
+        history.
+
+        Misc: removed recursion on inline expansion; revised the copyright
+        notice and version numbering.
+
+
+        CMDEDIT 3.13 by Jason Hood (29 April, 2001)
+
+        Just a minor bug fix to correct problems when using CLS with macros
+        and multiple commands (when using NANSI, anyway).
+
+
+        CMDEDIT 3.14 by Jason Hood (5 July, 2001)
+
+        Expand braces first, again (so "file.{c,txt}" can associate).
+
+
+        CMDEDIT 3.15 by Jason Hood (9 November, 2001)
+
+        Shaved off a few more bytes. Fixed a slight bug with filename
+        completion. Renamed "full word" to "string".
+
+
+        CMDEDIT 3.20 by Jason Hood (24 December, 2001)
+
+        Added separate application symbols and macros, with separate
+        translation and disabled states; /a is now used to select application
+        state. Disabling macro translation now actually disables internal
+        commands, and also disables variable replacement. Added self-load high
+        capability (and option to disable it). A carriage return is output when
+        executing a multi-line or macro. Removed the /w alternate warning
+        message (it was broken; no-one complained). Added explicit setting of
+        options (prefix with '+' or '-'). Display every buffer's size; tweaked
+        all the buffer output.
+
+
+        CMDEDIT 3.21 by Jason Hood (21 March, 2003)
+
+        Fixed bug when filename completing an empty string when the previous
+        string started with a quote.
+
+
+ACKNOWLEDGEMENTS
+
+        Thank you to Sven Guckes from Berlin who helped with the
+        documentation.
+
+
+BUGS
+
+        1) Configuration file.
+
+        If reading a macro definition from the file fills the table, the
+        remaining commands (including the "endm") will be placed in the
+        history.  I don't know if this is a bug or a feature.  Either way,
+        I'm not likely to be changing it.
+
+        2) Delimiters.
+
+        The DOS delimiters "/ < > |" cannot be used in symbol and macro names.
+        They can be defined, but they will not be recognized, and trying to
+        delete them will result in a crash.
+
+        3) Quoted filenames.
+
+        Quotes will be recognized within filenames, but not removed. This means
+
+        chd c:/Program" "Files
+
+        will fail, but
+
+        defs \ @cd
+        c:/Program" "Files/
+
+        will work. In other words, internal commands will fail, but otherwise
+        it depends on the application (usually it will work).
+
+        4) Zero-length buffers.
+
+        If you want to save memory by not using a buffer, specifying a size of
+        zero will result in an error.  For example, if you have no macros, you
+        might like to do "cmdedit ... /m0", but this tells you '0' is an
+        invalid or illegal option.  This can be overcome by simply leaving out
+        the size altogether: "cmdedit ... /m".
+
+                   -- Last document change: 21 March, 2003 --
+
+EOF
+-- 
